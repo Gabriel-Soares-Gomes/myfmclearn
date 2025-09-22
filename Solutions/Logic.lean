@@ -215,7 +215,7 @@ theorem conj_as_negdisj :
   cases PeQ with
   | intro p q =>
     rcases NaoPeNaoQ with (h1 | h2)
-    case intro inl =>
+    case intro.inl =>
       contradiction
     case intro.inr =>
       contradiction
@@ -227,23 +227,109 @@ theorem conj_as_negdisj :
 
 theorem demorgan_disj :
   ¬ (P ∨ Q) → (¬ P ∧ ¬ Q)  := by
-  sorry
+  intro denyPouQ
+  constructor
+  case left =>
+    intro p
+    have PouQ : P ∨ Q := by
+      left
+      exact p
+    contradiction
+  case right =>
+    intro q
+    have PouQ : P ∨ Q := by
+      right
+      exact q
+    contradiction
 
 theorem demorgan_disj_converse :
   (¬ P ∧ ¬ Q) → ¬ (P ∨ Q)  := by
-  sorry
+  intro nPandnQ
+  intro PorQ
+  cases nPandnQ with
+  | intro nP nQ =>
+  rcases PorQ with (h1 | h2)
+  case intro.inl =>
+    contradiction
+  case intro.inr =>
+    contradiction
 
 theorem demorgan_conj :
   ¬ (P ∧ Q) → (¬ Q ∨ ¬ P)  := by
-  sorry
+  intro denyPandQ
+  by_cases lemp : P 
+  case pos =>
+    by_cases lemq : Q
+    case pos =>
+      have PeQ : P ∧ Q := by
+        constructor
+        case left =>
+          exact lemp
+        case right =>
+          exact lemq
+      contradiction
+    case neg =>
+      left
+      exact lemq
+  case neg =>
+    right
+    exact lemp      
+
+
 
 theorem demorgan_conj_converse :
   (¬ Q ∨ ¬ P) → ¬ (P ∧ Q)  := by
-  sorry
+  intro nQornP
+  intro PandQ
+  cases PandQ with 
+  | intro p q =>
+    rcases nQornP with (h1 | h2)
+    case intro.inl =>
+      contradiction
+    case intro.inr =>
+      contradiction
+
+
 
 theorem demorgan_conj_law :
   ¬ (P ∧ Q) ↔ (¬ Q ∨ ¬ P)  := by
-  sorry
+  constructor
+  case mp =>
+    intro denyPandQ 
+    by_cases lemp : P
+    case pos =>
+      by_cases lemq : Q
+      case pos =>
+        have PandQ : P ∧ Q := by
+          constructor
+          case left =>
+            exact lemp
+          case right =>
+            exact lemq
+        contradiction
+      
+      case neg =>
+        left
+        exact lemq
+    
+    case neg =>
+      right
+      exact lemp
+  
+  case mpr =>
+    intro nQornP
+    intro PandQ
+    cases PandQ with
+    | intro p q  
+    rcases nQornP with (h1 | h2)
+    case intro.inl =>
+      apply h1 q
+    case intro.inr =>
+      apply h2 p
+
+        
+
+    
 
 theorem demorgan_disj_law :
   ¬ (P ∨ Q) ↔ (¬ P ∧ ¬ Q)  := by
