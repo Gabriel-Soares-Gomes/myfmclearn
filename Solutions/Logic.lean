@@ -198,11 +198,27 @@ theorem impl_linear :
 
 theorem disj_as_negconj :
   P ∨ Q → ¬ (¬ P ∧ ¬ Q)  := by
-  sorry
+  intro PorQ
+  intro NPeNQ
+  cases NPeNQ with 
+  | intro notP notQ =>
+    rcases PorQ with (h1 | h2)
+    case intro.inl =>
+      contradiction
+    case intro.inr =>
+      contradiction
 
 theorem conj_as_negdisj :
   P ∧ Q → ¬ (¬ P ∨ ¬ Q)  := by
-  sorry
+  intro PeQ
+  intro NaoPeNaoQ
+  cases PeQ with
+  | intro p q =>
+    rcases NaoPeNaoQ with (h1 | h2)
+    case intro inl =>
+      contradiction
+    case intro.inr =>
+      contradiction
 
 
 ------------------------------------------------
