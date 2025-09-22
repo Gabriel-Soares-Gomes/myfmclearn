@@ -86,8 +86,8 @@ theorem impl_as_disj_converse :
 
 theorem disj_as_impl :
   (P ∨ Q) → (¬ P → Q)  := by
-  intro PeQ
-  rcases PeQ with (h1 | h2)
+  intro PouQ
+  rcases PouQ with (h1 | h2)
   case inl =>
     intro notP
     contradiction
@@ -182,8 +182,15 @@ theorem peirce_law_weak :
 
 theorem impl_linear :
   (P → Q) ∨ (Q → P)  := by
-  sorry
-
+    by_cases lem : Q
+    case pos =>
+      left
+      intro p
+      exact lem
+    case neg =>
+      right
+      intro q
+      contradiction
 
 ------------------------------------------------
 -- Interdefinability of ∨,∧
