@@ -363,7 +363,7 @@ theorem demorgan_disj_law :
       cases nPandnQ with
         |intro nP nQ =>
           apply nQ h2
-          
+
 
 ------------------------------------------------
 -- Distributivity laws between ∨,∧
@@ -371,19 +371,102 @@ theorem demorgan_disj_law :
 
 theorem distr_conj_disj :
   P ∧ (Q ∨ R) → (P ∧ Q) ∨ (P ∧ R)  := by
-  sorry
+  intro h
+  cases h with
+  |intro p QorR =>
+    rcases QorR with (q | r)
+    case intro.inl =>
+      left
+      constructor
+      case h.left =>
+        exact p
+      case h.right =>
+        exact q
+
+    case intro.inr =>
+      right
+      constructor
+      case h.left =>
+        exact p
+      case h.right =>
+        exact r
+
+
+
 
 theorem distr_conj_disj_converse :
   (P ∧ Q) ∨ (P ∧ R) → P ∧ (Q ∨ R)  := by
-  sorry
+  intro hor
+  rcases hor with (PeQ | PeR)
+  case inl =>
+    cases PeQ with
+    | intro p q =>
+    constructor
+    case intro.left =>
+      exact p
+    case intro.right =>
+      left
+      exact q
+
+  case inr =>
+    cases PeR with
+    | intro p r =>
+    constructor
+    case intro.left =>
+      exact p
+    case intro.right =>
+      right
+      exact r
+
 
 theorem distr_disj_conj :
   P ∨ (Q ∧ R) → (P ∨ Q) ∧ (P ∨ R)  := by
-  sorry
+  intro h
+  rcases h with (p | QeR)
+  case inl =>
+    constructor
+    case left =>
+      left
+      exact p
+    case right =>
+      left
+      exact p
+
+  case inr =>
+    cases QeR with
+    | intro q r =>
+    constructor
+    case intro.left =>
+      right
+      exact q
+    case intro.right =>
+      right
+      exact r
+
 
 theorem distr_disj_conj_converse :
   (P ∨ Q) ∧ (P ∨ R) → P ∨ (Q ∧ R)  := by
-  sorry
+  intro h
+  cases h with
+  |intro PorQ PorR =>
+  rcases PorQ with (p | q)
+  case intro.inl =>
+    left
+    exact p
+
+  case intro.inr =>
+    rcases PorR with (p | r)
+    case inl =>
+      left
+      exact p
+    case inr =>
+      right
+      constructor
+      case h.left =>
+        exact q
+      case h.right =>
+        exact r
+
 
 
 ------------------------------------------------
@@ -392,11 +475,24 @@ theorem distr_disj_conj_converse :
 
 theorem curry_prop :
   ((P ∧ Q) → R) → (P → (Q → R))  := by
-  sorry
+  intro h
+  intro p
+  intro q
+  have PeQ : P ∧ Q := by
+    constructor
+    case left =>
+      exact p
+    case right =>
+      exact q
+  apply h PeQ
 
 theorem uncurry_prop :
   (P → (Q → R)) → ((P ∧ Q) → R)  := by
-  sorry
+  intro h
+  intro PeQ
+  rcases PeQ with ⟨p, q⟩
+  have QimpR : Q → R := h p
+  apply QimpR q
 
 
 ------------------------------------------------
@@ -405,7 +501,8 @@ theorem uncurry_prop :
 
 theorem impl_refl :
   P → P  := by
-  sorry
+  intro p
+  exact p
 
 
 ------------------------------------------------
@@ -414,19 +511,27 @@ theorem impl_refl :
 
 theorem weaken_disj_right :
   P → (P ∨ Q)  := by
-  sorry
+  intro p
+  left
+  exact p
 
 theorem weaken_disj_left :
   Q → (P ∨ Q)  := by
-  sorry
+  intro q
+  right
+  exact q
 
 theorem weaken_conj_right :
   (P ∧ Q) → P  := by
-  sorry
+  intro PeQ
+  rcases PeQ with ⟨p, q⟩
+  exact p
 
 theorem weaken_conj_left :
   (P ∧ Q) → Q  := by
-  sorry
+  intro PeQ
+  rcases PeQ with ⟨p, q⟩
+  exact q
 
 
 ------------------------------------------------
@@ -435,11 +540,36 @@ theorem weaken_conj_left :
 
 theorem disj_idem :
   (P ∨ P) ↔ P  := by
-  sorry
+  constructor
+  case mp =>
+    intro PorP
+    rcases PorP with (p1 | p2)
+    case inl =>
+      exact p1
+    case inr =>
+      exact p2
+
+  case mpr =>
+    intro p
+    right
+    exact p
 
 theorem conj_idem :
   (P ∧ P) ↔ P := by
-  sorry
+  constructor
+  case mp =>
+    intro PeP
+    rcases PeP with ⟨p1, p2⟩
+    exact p1
+
+  case mpr =>
+    intro p
+    constructor
+    case left =>
+      exact p
+    case right =>
+      exact p
+
 
 
 ------------------------------------------------
@@ -448,11 +578,13 @@ theorem conj_idem :
 
 theorem false_bottom :
   False → P := by
-  sorry
+  intro falso
+  contradiction
 
 theorem true_top :
   P → True  := by
-  sorry
+  intro p
+  trivial
 
 
 end propositional
