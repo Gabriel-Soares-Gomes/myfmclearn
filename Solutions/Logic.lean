@@ -677,15 +677,33 @@ theorem exists_as_neg_forall :
 
 theorem forall_as_neg_exists :
   (∀ x, P x) → ¬ (∃ x, ¬ P x)  := by
-  sorry
+  intro paratdXpx
+  intro existeXtqnpx
+  obtain ⟨x, npx⟩ := existeXtqnpx
+  have px := paratdXpx x
+  contradiction
+
 
 theorem forall_as_neg_exists_converse :
   ¬ (∃ x, ¬ P x) → (∀ x, P x)  := by
-  sorry
+  intro denyexisteXtqnpx
+  intro x
+  apply Classical.byContradiction
+  intro nPx
+  apply denyexisteXtqnpx
+  apply Exists.intro x nPx
 
 theorem exists_as_neg_forall_converse :
   ¬ (∀ x, ¬ P x) → (∃ x, P x)  := by
-  sorry
+  intro nParaTdxPx
+  apply Classical.byContradiction
+  intro naoExisteXtqPx
+  have paratdxpx : ∀ x, ¬ P x := by
+    intro x
+    intro px
+    apply naoExisteXtqPx
+    apply Exists.intro x px
+  contradiction
 
 theorem forall_as_neg_exists_law :
   (∀ x, P x) ↔ ¬ (∃ x, ¬ P x)  := by
