@@ -200,7 +200,7 @@ theorem disj_as_negconj :
   P ∨ Q → ¬ (¬ P ∧ ¬ Q)  := by
   intro PorQ
   intro NPeNQ
-  cases NPeNQ with 
+  cases NPeNQ with
   | intro notP notQ =>
     rcases PorQ with (h1 | h2)
     case intro.inl =>
@@ -257,7 +257,7 @@ theorem demorgan_disj_converse :
 theorem demorgan_conj :
   ¬ (P ∧ Q) → (¬ Q ∨ ¬ P)  := by
   intro denyPandQ
-  by_cases lemp : P 
+  by_cases lemp : P
   case pos =>
     by_cases lemq : Q
     case pos =>
@@ -273,7 +273,7 @@ theorem demorgan_conj :
       exact lemq
   case neg =>
     right
-    exact lemp      
+    exact lemp
 
 
 
@@ -281,7 +281,7 @@ theorem demorgan_conj_converse :
   (¬ Q ∨ ¬ P) → ¬ (P ∧ Q)  := by
   intro nQornP
   intro PandQ
-  cases PandQ with 
+  cases PandQ with
   | intro p q =>
     rcases nQornP with (h1 | h2)
     case intro.inl =>
@@ -295,7 +295,7 @@ theorem demorgan_conj_law :
   ¬ (P ∧ Q) ↔ (¬ Q ∨ ¬ P)  := by
   constructor
   case mp =>
-    intro denyPandQ 
+    intro denyPandQ
     by_cases lemp : P
     case pos =>
       by_cases lemq : Q
@@ -307,34 +307,63 @@ theorem demorgan_conj_law :
           case right =>
             exact lemq
         contradiction
-      
+
       case neg =>
         left
         exact lemq
-    
+
     case neg =>
       right
       exact lemp
-  
+
   case mpr =>
     intro nQornP
     intro PandQ
     cases PandQ with
-    | intro p q  
+    | intro p q
     rcases nQornP with (h1 | h2)
     case intro.inl =>
       apply h1 q
     case intro.inr =>
       apply h2 p
 
-        
 
-    
+
+
 
 theorem demorgan_disj_law :
   ¬ (P ∨ Q) ↔ (¬ P ∧ ¬ Q)  := by
-  sorry
+  constructor
+  case mp =>
+    intro denyPorQ
+    constructor
+    case left =>
+      intro p
+      have PorQ : P ∨ Q := by
+        left
+        exact p
+      contradiction
+    case right =>
+      intro q
+      have PorQ : P ∨ Q := by
+        right
+        exact q
+      contradiction
 
+  case mpr =>
+    intro nPandnQ
+    intro PorQ
+    rcases PorQ with (h1 | h2)
+    case inl =>
+      cases nPandnQ with
+      |intro nP nQ =>
+        apply nP h1
+
+    case inr =>
+      cases nPandnQ with
+        |intro nP nQ =>
+          apply nQ h2
+          
 
 ------------------------------------------------
 -- Distributivity laws between ∨,∧
