@@ -594,7 +594,7 @@ end propositional
 section predicate
 
 variable (U : Type)
-variable (P Q : U → Type)
+variable (P Q : U → Prop)
 
 
 ------------------------------------------------
@@ -603,19 +603,43 @@ variable (P Q : U → Type)
 
 theorem demorgan_exists :
   ¬ (∃ x, P x) → (∀ x, ¬ P x)  := by
-  sorry
+  intro h
+  intro x
+  intro hpx
+  apply h
+  exists x
 
 theorem demorgan_exists_converse :
   (∀ x, ¬ P x) → ¬ (∃ x, P x)  := by
-  sorry
+  intro h
+  intro eXtqPx
+  obtain ⟨x, px⟩ := eXtqPx
+  have nPx := h x
+  contradiction
 
 theorem demorgan_forall :
   ¬ (∀ x, P x) → (∃ x, ¬ P x)  := by
-  sorry
+  intro h
+  apply Classical.byContradiction
+  intro h2
+  apply h
+  intro x
+  apply Classical.not_not.mp
+  intro hnpx
+  apply h2
+  exists x
+
+
 
 theorem demorgan_forall_converse :
   (∃ x, ¬ P x) → ¬ (∀ x, P x)  := by
-  sorry
+  intro h_exnpx
+  intro h_ptxpx
+  obtain ⟨x, px⟩ := h_exnpx
+  have h_px := h_ptxpx x
+  contradiction
+
+
 
 theorem demorgan_forall_law :
   ¬ (∀ x, P x) ↔ (∃ x, ¬ P x)  := by
@@ -623,7 +647,20 @@ theorem demorgan_forall_law :
 
 theorem demorgan_exists_law :
   ¬ (∃ x, P x) ↔ (∀ x, ¬ P x)  := by
-  sorry
+  constructor
+  case mp =>
+    intro h_nexpx
+    intro x
+    intro px
+    apply h_nexpx
+    apply Exists.intro x px
+
+  case mpr =>
+    intro paratdXpx
+    intro existeXtqpx
+    obtain ⟨x, px⟩ := existeXtqpx
+    have npx := paratdXpx x
+    contradiction
 
 
 ------------------------------------------------
@@ -632,7 +669,11 @@ theorem demorgan_exists_law :
 
 theorem exists_as_neg_forall :
   (∃ x, P x) → ¬ (∀ x, ¬ P x)  := by
-  sorry
+  intro existeXtqPx
+  intro paratdXnPx
+  obtain ⟨x, px⟩ := existeXtqPx
+  have npx := paratdXnPx x
+  contradiction
 
 theorem forall_as_neg_exists :
   (∀ x, P x) → ¬ (∃ x, ¬ P x)  := by
