@@ -707,11 +707,48 @@ theorem exists_as_neg_forall_converse :
 
 theorem forall_as_neg_exists_law :
   (∀ x, P x) ↔ ¬ (∃ x, ¬ P x)  := by
-  sorry
+  constructor
+  case mp =>
+    intro ptdxPx
+    intro extqnPx
+    obtain ⟨x, npx⟩ := extqnPx
+    have px := ptdxPx x
+    contradiction
+  
+  case mpr =>
+    intro denyExtqPx
+    intro x
+    apply Classical.byContradiction
+    intro npx 
+    apply denyExtqPx
+    apply Exists.intro x
+    intro px
+    contradiction
+
+
+    
 
 theorem exists_as_neg_forall_law :
   (∃ x, P x) ↔ ¬ (∀ x, ¬ P x)  := by
-  sorry
+  constructor
+  case mp =>
+    intro exTqPx
+    intro paratdXnPx
+    obtain ⟨x, px⟩ := exTqPx
+    have npx := paratdXnPx x
+    contradiction
+  
+  case mpr =>
+    intro denyparatdXnPx
+    apply Classical.byContradiction
+    intro denyeXtqPx
+    apply denyparatdXnPx
+    intro x
+    intro px
+    apply denyeXtqPx
+    apply Exists.intro x
+    exact px
+
 
 
 ------------------------------------------------
