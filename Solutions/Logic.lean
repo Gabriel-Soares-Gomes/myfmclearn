@@ -643,7 +643,27 @@ theorem demorgan_forall_converse :
 
 theorem demorgan_forall_law :
   ¬ (∀ x, P x) ↔ (∃ x, ¬ P x)  := by
-  sorry
+  constructor
+  case mp =>
+    intro denyForAll
+    apply Classical.byContradiction
+    intro denyExists
+    apply denyForAll
+    intro x
+    apply Classical.byContradiction
+    intro npx
+    apply denyExists
+    apply Exists.intro x
+    exact npx
+
+  case mpr =>
+    intro existsNpx
+    intro ForAll
+    obtain ⟨x, npx⟩ := existsNpx
+    have px := ForAll x
+    contradiction
+
+
 
 theorem demorgan_exists_law :
   ¬ (∃ x, P x) ↔ (∀ x, ¬ P x)  := by
@@ -714,19 +734,19 @@ theorem forall_as_neg_exists_law :
     obtain ⟨x, npx⟩ := extqnPx
     have px := ptdxPx x
     contradiction
-  
+
   case mpr =>
     intro denyExtqPx
     intro x
     apply Classical.byContradiction
-    intro npx 
+    intro npx
     apply denyExtqPx
     apply Exists.intro x
     intro px
     contradiction
 
 
-    
+
 
 theorem exists_as_neg_forall_law :
   (∃ x, P x) ↔ ¬ (∀ x, ¬ P x)  := by
@@ -737,7 +757,7 @@ theorem exists_as_neg_forall_law :
     obtain ⟨x, px⟩ := exTqPx
     have npx := paratdXnPx x
     contradiction
-  
+
   case mpr =>
     intro denyparatdXnPx
     apply Classical.byContradiction
@@ -757,27 +777,96 @@ theorem exists_as_neg_forall_law :
 
 theorem exists_conj_as_conj_exists :
   (∃ x, P x ∧ Q x) → (∃ x, P x) ∧ (∃ x, Q x)  := by
-  sorry
+  intro h1
+  constructor
+  case left =>
+    obtain ⟨x, px, qx⟩ := h1
+    apply Exists.intro x
+    exact px
+
+  case right =>
+    obtain ⟨x, px, qx⟩ := h1
+    apply Exists.intro x
+    exact qx
+
 
 theorem exists_disj_as_disj_exists :
   (∃ x, P x ∨ Q x) → (∃ x, P x) ∨ (∃ x, Q x)  := by
-  sorry
+  intro h
+  obtain ⟨x, pxORqx⟩ := h
+  rcases pxORqx with (h1 | h2)
+  case intro.inl =>
+    left
+    apply Exists.intro x
+    exact h1
+
+  case intro.inr =>
+    right
+    apply Exists.intro x
+    exact h2
+
 
 theorem exists_disj_as_disj_exists_converse :
   (∃ x, P x) ∨ (∃ x, Q x) → (∃ x, P x ∨ Q x)  := by
-  sorry
+  intro orexists
+  rcases orexists with (h1 | h2)
+  case inl =>
+    obtain ⟨x, px⟩ := h1
+    apply Exists.intro x
+    left
+    exact px
+
+  case inr =>
+    obtain ⟨x, qx⟩ := h2
+    apply Exists.intro x
+    right
+    exact qx
+
 
 theorem forall_conj_as_conj_forall :
   (∀ x, P x ∧ Q x) → (∀ x, P x) ∧ (∀ x, Q x)  := by
-  sorry
+  intro andForAll
+  constructor
+  case left =>
+    intro x
+    have pxANDqx := andForAll x
+    rcases pxANDqx with ⟨px, qx⟩
+    exact px
+
+  case right =>
+    intro x
+    have pxANDqx := andForAll x
+    rcases pxANDqx with ⟨px, qx⟩
+    exact qx
 
 theorem forall_conj_as_conj_forall_converse :
   (∀ x, P x) ∧ (∀ x, Q x) → (∀ x, P x ∧ Q x)  := by
-  sorry
+  intro andForAll
+  intro x
+  rcases andForAll with ⟨h1, h2⟩
+  constructor
+  case intro.left =>
+    have px := h1 x
+    exact px
+  case intro.right =>
+    have qx := h2 x
+    exact qx
+
 
 theorem forall_disj_as_disj_forall_converse :
   (∀ x, P x) ∨ (∀ x, Q x) → (∀ x, P x ∨ Q x)  := by
-  sorry
+  intro OrForAll
+  intro x
+  rcases OrForAll with (h1 | h2)
+  case inl =>
+    left
+    have px := h1 x
+    exact px
+
+  case inr =>
+    right
+    have qx := h2 x
+    exact qx
 
 
 end predicate
